@@ -77,7 +77,7 @@ int check_invalid_args(char *args, int stack_index, t_utils *utils)
 	}
 	if (args[i] && !(args[i] >= '0' && args[i] <= '9'))
 			return(utils->error = TRUE, 0);
-	return (utils->array[stack_index]= result * sign, 1);
+	return (utils->stack_a[stack_index]= result * sign, 1);
 }
 
 int *string_to_array(char **args, int ac, t_utils *utils)
@@ -85,9 +85,9 @@ int *string_to_array(char **args, int ac, t_utils *utils)
 	int i;
 
 	i = 0; 
-	utils->array = malloc(ac * sizeof(int));
+	utils->stack_a = malloc(ac * sizeof(int));
 	utils->error = FALSE;
-	if (!utils->array)
+	if (!utils->stack_a)
 	{
 		free_split(args);
 		exit(1);
@@ -98,16 +98,16 @@ int *string_to_array(char **args, int ac, t_utils *utils)
 		if (utils->error)
 		{
 			free_split(args);
-			free(utils->array);
+			free(utils->stack_a);
 			free(utils);
 			write(1, "error\n", ft_strlen("error\n"));
 			exit(1);
 		}
 		i++;
 	}
-	utils->element_number = i;
+	utils->element_a = i;
 	return 0;
-	//return utils->array;
+	//return utils->stack_a;
 }
 
 int check_doubles( t_utils *utils)
@@ -116,12 +116,12 @@ int check_doubles( t_utils *utils)
 	int j;
 
 	i = 0;
-	while ( i < utils->element_number)
+	while ( i < utils->element_a)
 	{
 		j = i + 1;
-		while (i < utils->element_number && j < utils->element_number )
+		while (i < utils->element_a && j < utils->element_a )
 		{
-			if (utils->array[i] == utils->array[j])
+			if (utils->stack_a[i] == utils->stack_a[j])
 				return FALSE;
 			else
 				j ++;
@@ -131,14 +131,12 @@ int check_doubles( t_utils *utils)
 	return TRUE;
 }
 
-int parse(char **args, int ac)
+void parse(char **args, int ac, t_utils *utils)
 {
 	char *merged_args;
 	char **splited_args;
 	int args_len; 
-	t_utils *utils;
 
-	utils = malloc(sizeof(t_utils));
 	args_len = count_args_len(args, ac);
 	merged_args = merge_args(args, ac);
 	splited_args = ft_split(merged_args, ' ');
@@ -147,15 +145,12 @@ int parse(char **args, int ac)
 	if (!check_doubles(utils))
 	{
 		free_split(splited_args);
-		free(utils->array);
+		free(utils->stack_a);
 		free(utils);
 		write (1, "doubles", ft_strlen("doubles"));
 		exit(1);
 	}
-	for (int i = 0; i < utils->element_number ; i++)
-		printf("utils->array --> : %d\n", utils->array[i]);
 	free_split(splited_args);
-	free(utils->array);
-	free(utils);
-	return 0;
+	utils->stack_b = malloc(utils->element_a * sizeof(int));
+	utils->element_b = 0;
 }

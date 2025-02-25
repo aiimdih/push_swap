@@ -18,10 +18,24 @@
 # include "libft/libft.h"
 typedef struct s_utils
 {
-	int element_number;
+	int element_a;
+	int element_b;
 	int error;
-	int *array;
+	int *stack_a;
+	int *stack_b;
 }					t_utils;
 
-int parse(char **args, int ac);
+void parse(char **args, int ac, t_utils *utils);
+void swap(int *stack);
+void swap_a(t_utils *utils);
+void swap_b(t_utils *utils);
+void swap_a_and_b(t_utils *utils);
+void push_a(t_utils *utils);
+void push_b(t_utils *utils);
+void rotate_a(t_utils *utils);
+void rotate_b(t_utils *utils);
+void rotate_a_and_b(t_utils *utils);
+void reverse_rotate_a(t_utils *utils);
+void reverse_rotate_b(t_utils *utils);
+void reverse_rotate_a_b(t_utils *utils);
 #endif

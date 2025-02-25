@@ -14,5 +14,32 @@
 
 int main(int ac, char **av)
 {
-	parse(av, ac);
+	t_utils *utils;
+	utils = malloc(sizeof(t_utils));
+	parse(av, ac, utils);
+	for (int i = 0; i < utils->element_a ; i++)
+		printf("utils->stack_a --> : %d\n", utils->stack_a[i]);
+	for (int i = 0; i < utils->element_b ; i++)
+		printf("utils->stack_b --> : %d\n", utils->stack_b[i]);
+	swap_a(utils);
+	push_b(utils);
+	push_b(utils);
+	push_b(utils);
+	rotate_a(utils);
+	rotate_b(utils);
+	reverse_rotate_a_b(utils);
+	//reverse_rotate_a_b(utils);
+	swap_a(utils);
+	push_a(utils);
+	push_a(utils);
+	push_a(utils);
+	//for (int i = 0; i < utils->element_b ; i++)
+		//printf("utils->stack_b --> : %d\n", utils->stack_b[i]);
+	//rotate_a(utils);	
+	printf("----------------- \n");
+	for (int i = 0; i < utils->element_b ; i++)
+		printf("utils->stack_b --> : %d\n", utils->stack_b[i]);
+	printf("----------------- \n");
+	for (int i = 0; i < utils->element_a ; i++)
+		printf("utils->stack_a --> : %d\n", utils->stack_a[i]);
 }

@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <limits.h>
 #include <stdio.h>
 
 int ignored_elements(int element, int index, int *ignored, int size)
@@ -20,7 +21,7 @@ int ignored_elements(int element, int index, int *ignored, int size)
 	return 0;
 }
 
-int *lis(int *stack, int size)
+int lis(int *stack, int size)
 {
 	int distance;
 	int j;
@@ -41,18 +42,41 @@ int *lis(int *stack, int size)
 	index = 0;
 	best_stack = malloc(size * sizeof(int));
 	ignored = malloc((size * 2) * sizeof(int));
+	while (size > index)
+	{
+		len = 0;
+		j = index + 1;
+		while (j < size)
+		{
+			if (stack[index] < stack[j])
+				len ++;
+			j++;
+		}
+		if (len > prev_len)
+		{
+			prev_len = len;
+			best_index = index;
+		}
+		index++;
+	}
+	while (best_index > 0)
+	{
+		ignored[ignored_size] = stack[best_index - 1];
+		ignored[ignored_size + 1] = best_index - 1;
+		ignored_size += 2;
+		best_index--;
+	}
+	index = 0;
 	while (index < size)
 	{
 		j = index + 1;
 		i = 0;
-		distance = 5555;
+		distance = INT_MAX;
 		len = 0;
 		while (ignored_size > 0 && ignored_elements(stack[index], index, ignored, ignored_size))
 			index++;
-		printf("element %d index %d\n", stack[index], index);
 		while (j < size)
 		{
-		//	printf("index %d j--->%d\n", stack[j], j);
 			if (stack[index] < stack[j] && (stack[j] - stack[index]) < distance)
 			{
 				if ((!ignored_elements(stack[j], j, ignored, ignored_size)))
@@ -61,27 +85,35 @@ int *lis(int *stack, int size)
 					save = j;
 				}
 			}
+			else if (stack[index] > stack[j])
+			{
+				ignored[ignored_size] = stack[j];
+				ignored[ignored_size + 1] = j;
+				ignored_size += 2;
+			}
 			j++;
 		}
 		best_index = save;
-		//printf("best_index is -->%d\n", stack[best_index]);
+		prev_len = 0;
 		while (save > index)
 		{
 			if (best_index - 1 == index)
 				break;
 			j = save + 1;
-			i = save;
-			while (i < size)
+			if (stack[save] > stack[index])
 			{
-				if (stack[i] < stack[j])
-					len ++;
-				i++;
+				while (j < size)
+				{
+					if (stack[save] < stack[j])
+						len ++;
+					j++;
+				}
+				if (len > prev_len)
+				{
+					prev_len = len;
+					best_index = save;
+				}
 			}
-			if (len < prev_len)
-			{
-				best_index = save;
-			}
-			prev_len = len;
 			save--;
 		}
 		while (best_index > index)
@@ -93,9 +125,6 @@ int *lis(int *stack, int size)
 			ignored_size += 2;
 			best_index--;
 		}
-		for (int i = 0; ignored_size > i; i += 2)
-			printf("ignoreddd--->%d index %d\n", ignored[i], ignored[i + 1]);
-		printf("---------------------\n");
 		
 		index++;
 		//return stack;
@@ -113,12 +142,10 @@ int *lis(int *stack, int size)
 		}
 		index++;
 	}
-	for (int i = 0; best_stack_size > i; i++)
-		printf("best_stack--->%d\n", best_stack[i]);
-	return stack;
+	return ignored_size / 2;
 }
 int main()
 {
-	int stack[16] = {1, 2, 3, 10, 12, 5, 4, 6, 13, 18, 15, 7, 9, 300, 30, 101}; 
-	lis(stack, 16);
+	int stack[7] = {7, 6, 5, 4, 3, 2 ,1}; 
+	lis(stack, 7);
 }

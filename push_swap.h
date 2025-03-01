@@ -23,6 +23,8 @@ typedef struct s_utils
 	int error;
 	int *stack_a;
 	int *stack_b;
+	int *lds_stack;
+	int lds_stack_size;
 }					t_utils;
 
 void parse(char **args, int ac, t_utils *utils);
@@ -38,4 +40,5 @@ void rotate_a_and_b(t_utils *utils);
 void reverse_rotate_a(t_utils *utils);
 void reverse_rotate_b(t_utils *utils);
 void reverse_rotate_a_b(t_utils *utils);
+void lis(t_utils *utils);
 #endif

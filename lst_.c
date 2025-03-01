@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <stdio.h>
+#include "push_swap.h"
 
 int ignored_elements(int element, int index, int *ignored, int size)
 {
@@ -20,35 +21,24 @@ int ignored_elements(int element, int index, int *ignored, int size)
 	}
 	return 0;
 }
-
-int lis(int *stack, int size)
+void ignore_to_firs_index(int *ignored, int *ignored_size, t_utils *utils)
 {
-	int distance;
-	int j;
-	int index;
-	int save;
-	int len;
-	int *ignored;
-	int ignored_size;
-	int prev_len;
 	int best_index;
-	int i;
-	int *best_stack;
-	int best_stack_size;
+	int len;
+	int j;
+	int prev_len;
+	int index;
 
-	best_stack_size = 0;
-	ignored_size = 0;
-	prev_len = 0;
 	index = 0;
-	best_stack = malloc(size * sizeof(int));
-	ignored = malloc((size * 2) * sizeof(int));
-	while (size > index)
+	prev_len = 0;
+	best_index = 0;
+	while (utils->element_a > index)
 	{
 		len = 0;
 		j = index + 1;
-		while (j < size)
+		while (j < utils->element_a)
 		{
-			if (stack[index] < stack[j])
+			if (utils->stack_a[index] < utils->stack_a[j])
 				len ++;
 			j++;
 		}
@@ -61,37 +51,63 @@ int lis(int *stack, int size)
 	}
 	while (best_index > 0)
 	{
-		ignored[ignored_size] = stack[best_index - 1];
-		ignored[ignored_size + 1] = best_index - 1;
-		ignored_size += 2;
+		ignored[*ignored_size] = utils->stack_a[best_index - 1];
+		ignored[*ignored_size + 1] = best_index - 1;
+		*ignored_size += 2;
 		best_index--;
 	}
+}
+void lis(t_utils *utils)
+{
+	int distance;
+	int j;
+	int index;
+	int save;
+	int len;
+	int *ignored;
+	int ignored_size;
+	int prev_len;
+	int best_index;
+	int i;
+
+	ignored_size = 0;
+	prev_len = 0;
 	index = 0;
-	while (index < size)
+	ignored = malloc((utils->element_a * 3) * sizeof(int));
+	ignore_to_firs_index(ignored, &ignored_size, utils);
+	index = 0;
+	while (index < utils->element_a)
 	{
-		j = index + 1;
 		i = 0;
 		distance = INT_MAX;
 		len = 0;
-		while (ignored_size > 0 && ignored_elements(stack[index], index, ignored, ignored_size))
+		save = -1;
+		while (index < utils->element_a && ignored_size > 0 && ignored_elements(utils->stack_a[index], index, ignored, ignored_size))
 			index++;
-		while (j < size)
+		j = index + 1;
+		while (j < utils->element_a)
 		{
-			if (stack[index] < stack[j] && (stack[j] - stack[index]) < distance)
+			if (utils->stack_a[index] < utils->stack_a[j] && (utils->stack_a[j] - utils->stack_a[index]) < distance && utils->stack_a[index] != utils->stack_a[j])
 			{
-				if ((!ignored_elements(stack[j], j, ignored, ignored_size)))
+				if ((!ignored_elements(utils->stack_a[j], j, ignored, ignored_size)))
 				{
-					distance = stack[j] - stack[index];
+					distance = utils->stack_a[j] - utils->stack_a[index];
 					save = j;
 				}
 			}
-			else if (stack[index] > stack[j])
+			else if (utils->stack_a[index] >= utils->stack_a[j])
 			{
-				ignored[ignored_size] = stack[j];
+//				printf("ignored %d < stack index %d\n", stack[j], stack[index]);
+				ignored[ignored_size] = utils->stack_a[j];
 				ignored[ignored_size + 1] = j;
 				ignored_size += 2;
 			}
 			j++;
+		}
+		if (save == -1)
+		{
+			index++;
+			continue;
 		}
 		best_index = save;
 		prev_len = 0;
@@ -99,15 +115,22 @@ int lis(int *stack, int size)
 		{
 			if (best_index - 1 == index)
 				break;
+			len = 0;
+			i = save;
 			j = save + 1;
-			if (stack[save] > stack[index])
+			if (utils->stack_a[save] > utils->stack_a[index])
 			{
-				while (j < size)
+				while (j < utils->element_a)
 				{
-					if (stack[save] < stack[j])
+//					printf("stack j %d stack save %d\n", stack[j], stack[save]);
+					if (utils->stack_a[i] < utils->stack_a[j])
+					{
 						len ++;
+						i = j;
+					}
 					j++;
 				}
+//				printf("len -->%d best stack --> %d\n", len, stack[save]);
 				if (len > prev_len)
 				{
 					prev_len = len;
@@ -116,11 +139,11 @@ int lis(int *stack, int size)
 			}
 			save--;
 		}
-		while (best_index > index)
+		while (best_index > index && (ignored_size + 2) <= 2 * utils->element_a)
 		{
 			if (best_index - 1 == index)
 				break;
-			ignored[ignored_size] = stack[best_index - 1];
+			ignored[ignored_size] = utils->stack_a[best_index - 1];
 			ignored[ignored_size + 1] = best_index - 1;
 			ignored_size += 2;
 			best_index--;
@@ -131,21 +154,17 @@ int lis(int *stack, int size)
 	}
 	index = 0;
 	i = 0;
-
-	while (index < size)
+	utils->lds_stack_size = 0;
+	while (index < utils->element_a)
 	{
-		if (!ignored_elements(stack[index], index, ignored, ignored_size))
+		if (!ignored_elements(utils->stack_a[index], index, ignored, ignored_size))
 		{
-			best_stack[i] = stack[index];
-			best_stack_size++;
+			utils->lds_stack[i] = utils->stack_a[index];
+			utils->lds_stack_size++;
 			i++;
 		}
 		index++;
 	}
-	return ignored_size / 2;
-}
-int main()
-{
-	int stack[7] = {7, 6, 5, 4, 3, 2 ,1}; 
-	lis(stack, 7);
+	for (int i = 0; i < utils->lds_stack_size; i++)
+		printf("best stack %d\n",  utils->lds_stack[i]);
 }

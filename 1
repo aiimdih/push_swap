@@ -1,0 +1,27 @@
+#include <stdio.h>
+
+int count_pos_in_stack_a(int element, int *stack, size)
+{
+	int count;
+	int i;
+	int bigest_number;
+	int tmp;
+
+	i = 0;
+	bigest_number = 0;
+	tmp = utils->stack_a[0]; 
+	while (utils->element_a > i)
+	{
+		if (element > utils->stack_a[i] && tmp < utils->stack_a[i])
+		{
+			bigest_number = i;
+			tmp = utils->stack_a[i];
+		}
+		i++;
+	}
+}
+int main()
+{
+	int stack_a[5] = {1, 2, 3, 6, 8};
+	printf("%d \n",count_pos_in_stack_a(7, stack_a, 5));
+}

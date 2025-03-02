@@ -1,46 +1,42 @@
 #include <stdio.h>
 
-
-void push_a(int *stack_a, int *stack_b, int *element_a, int *element_b)
+int count_pos_in_stack_a(int element, int *stack, int size)
 {
+	int count;
 	int i;
-	int prev;
-	int tmp_1;
+	int bigest_number;
+	int tmp;
 
 	i = 0;
-	prev = stack_a[i + 1];
-	stack_a[i + 1] = stack_a[i];
-	i++;
-	while (i < *element_a)
+	bigest_number = 0;
+	tmp = stack[0]; 
+	bigest_number = -1;
+	while (size > i)
 	{
-		tmp_1 = stack_a[i + 1]; 
-		stack_a[i + 1] = prev;
-		prev = tmp_1;
+		if (element >= stack[i] && tmp <= stack[i])
+		{
+			bigest_number = i;
+			tmp = stack[i];
+		}
 		i++;
 	}
-	stack_a[0] = stack_b[0];
 	i = 0;
-	while (i < 4)
+	if (bigest_number == -1)
 	{
-		printf("%d\n", stack_a[i]);
-		i++;
+		while (size > i)
+		{
+			if (tmp > stack[i])
+			{
+				bigest_number = i;
+				tmp = stack[i];
+			}
+			i++;
+		}
 	}
-	while (i <= *element_b)
-	{
-		stack_b[i] = stack_b[i + 1];
-		i++;
-	}
-	element_b--;
-	element_a++;
-	i = 0;
-	printf("x\n");
+	return bigest_number;
 }
-
 int main()
 {
-	int element_b = 3;
-	int element_a = 3;
-	int stack_a[3] = {0, 2, 6};
-	int stack_b[3] = {3 ,4 ,7};
-	push_a(stack_a, stack_b, &element_a, &element_b);
+	int stack_a[6] = {6, 8, 2, 3, 5};
+	printf("%d \n",count_pos_in_stack_a(1, stack_a, 5));
 }

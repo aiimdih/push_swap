@@ -73,7 +73,7 @@ void lis(t_utils *utils)
 	ignored_size = 0;
 	prev_len = 0;
 	index = 0;
-	ignored = malloc((utils->element_a * 100) * sizeof(int));
+	ignored = malloc((utils->element_a * 1000000) * sizeof(int));
 	ignore_to_firs_index(ignored, &ignored_size, utils);
 	index = 0;
 	while (index < utils->element_a)

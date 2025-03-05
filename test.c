@@ -26,7 +26,7 @@ int count_pos_in_stack_a(int element, int *stack, int size)
 		printf("element===> %d, stack[i] %d tmp ==> %d\n", element, stack[i], tmp);
 		if (element >= stack[i] && tmp <= stack[i])
 		{
-			bigest_number = i;
+			bigest_number = i + 1;
 			tmp = stack[i];
 		}
 		i++;
@@ -50,6 +50,6 @@ int count_pos_in_stack_a(int element, int *stack, int size)
 }
 int main()
 {
-	int stack_a[9] = {28, 29, 5, 7, 11, 12, 20, 21, 27};
-	printf("%d \n",count_pos_in_stack_a(4, stack_a, 9));
+	int stack_a[4] = {4, 5, 16, 27};
+	printf("%d \n",count_pos_in_stack_a(28, stack_a, 4));
 }

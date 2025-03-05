@@ -25,6 +25,7 @@ typedef struct s_utils
 	int *stack_b;
 	int *lds_stack;
 	int lds_stack_size;
+	int lds_limitter;
 }					t_utils;
 
 void parse(char **args, int ac, t_utils *utils);

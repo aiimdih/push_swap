@@ -28,6 +28,11 @@ typedef struct s_utils
 	int lds_limitter;
 }					t_utils;
 
+typedef struct rrrs_instrictions 
+{
+	int remainder;
+	int a_or_b;
+}					t_rrrs;
 void parse(char **args, int ac, t_utils *utils);
 void swap(int *stack);
 void swap_a(t_utils *utils);

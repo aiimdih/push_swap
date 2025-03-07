@@ -80,52 +80,27 @@ int in_lds_stack(int element, t_utils *utils)
 	}
 	return 0;
 }
-
-
-int find_bigger(int *stack, int size)
-{
-	int tmp;
-	int i;
-	int j;
-	int index;
-	
-	tmp = stack[0]; 
-	i = 0;
-	while (i + 1 < size)
-	{
-		j = i + 1;
-		if (tmp < stack[j])
-		{
-			tmp = stack[j];
-			index = j;
-		}
-		i++;
-	}
-	return index;
-}
 		
 void push_to_b(t_utils *utils)
 {
 	int i;
-	int bigger_element_index;
 
 	i = 0;
 	while (utils->element_a > 3)
 	{
 		push_b(utils);
 	}
-	bigger_element_index = find_bigger(utils->stack_a, utils->element_a);
 	if (utils->element_a == 3)
 	{
-		if (bigger_element_index != utils->element_a - 1)
-		{
-			if (bigger_element_index == 0)
-				 rotate_a(utils);
-			 else 
-				 reverse_rotate_a(utils);
-		}
 		if (utils->stack_a[0] > utils->stack_a[1])
 			swap_a(utils);	
+		else if (utils->stack_a[0] > utils->stack_a[2])
+			reverse_rotate_a(utils);
+		if (utils->stack_a[1] > utils->stack_a[2])
+		{
+			rotate_a(utils);
+			swap_a(utils);
+		}
 	}
 
 }
@@ -241,6 +216,7 @@ void count_cost(t_utils *utils)
 			cost_to_top = i;
 		if ((cost_to_top < 0 && cost_in_stack_a < 0) || (cost_to_top > 0 && cost_in_stack_a > 0))
 		{
+			 printf("on the condition , element --> %d , cost_to_top --> %d --> cost_in_stack_a %d \n", utils->stack_b[i], cost_to_top, cost_in_stack_a);
 			if (cost_to_top > cost_in_stack_a)
 			{
 				 if (cost_to_top < 0)
@@ -265,7 +241,7 @@ void count_cost(t_utils *utils)
 		}
 		else
 			cost = my_abs(cost_in_stack_a) + my_abs(cost_to_top);
-	 	/*printf("the cost of element utils->stack_b %d is ==> %d cost to top %d cost_in_stack_a %d\n", utils->stack_b[i], cost, cost_to_top, cost_in_stack_a);*/
+	 	printf("the cost of element utils->stack_b %d is ==> %d index %d cost to top %d cost_in_stack_a %d\n", utils->stack_b[i], cost, i, cost_to_top, cost_in_stack_a);
 		if(cost < prev_cost || prev_cost == -1)
 		{
 			prev_cost = cost;
@@ -278,41 +254,31 @@ void count_cost(t_utils *utils)
 		cost_to_top = (utils->element_b - lower_cost_index) * -1; 
 	else 
 		cost_to_top = lower_cost_index;
-	/*printf("index of the lower cost --> %d\n", lower_cost_index);*/
+	printf("index of the lower cost --> %d\n", lower_cost_index);
 	cost_in_stack_a = count_pos_in_stack_a(lower_cost_element, utils);
-	/*printf("lowe cost is --> %d\n", lower_cost_element);*/
-	/*printf("cost in a --> %d, cost_to_top %d, cost == %d \n", cost_in_stack_a, cost_to_top, cost);*/
+	printf("lowe cost is --> %d\n", lower_cost_element);
+	printf("cost in a --> %d, cost_to_top %d\n", cost_in_stack_a, cost_to_top);
 	
-	int tmp;
 	if ((cost_to_top < 0 && cost_in_stack_a < 0) || (cost_to_top > 0 && cost_in_stack_a > 0))
 	{
-		/*printf("if the condition is true cost in a --> %d, cost_to_top %d\n", cost_in_stack_a, cost_to_top);*/
+		printf("if the condition is true cost in a --> %d, cost_to_top %d\n", cost_in_stack_a, cost_to_top);
 
 		if (cost_to_top < 0)
 		{
-			if (cost_to_top < cost_in_stack_a)
-				 tmp = my_abs(cost_in_stack_a);
-			else 
-				 tmp = my_abs(cost_to_top);
-			while (tmp > 0)
+			while (cost >= 0)
 			{
 				reverse_rotate_a_b(utils);
-				tmp--;
+				cost--;
 			}
 		}
 		else 
 		{
-			if (cost_to_top > cost_in_stack_a)
-				 tmp = my_abs(cost_in_stack_a);
-			else 
-				 tmp = my_abs(cost_to_top);
-			while (tmp > 0)
+			while (cost >= 0)
 			{
 				rotate_a_and_b(utils);
-				tmp--;
+				cost--;
 			}
 		}
-		/*printf("cost_in_stack_a %d --? cost_to_top %d\n", cost_in_stack_a, cost_to_top);*/
 		if (cost_in_stack_a != cost_to_top)
 		{
 			if (cost_in_stack_a < 0)
@@ -320,29 +286,28 @@ void count_cost(t_utils *utils)
 				if (cost_to_top > cost_in_stack_a)
 				{
 					remainder = my_abs(cost_in_stack_a) - my_abs(cost_to_top);
-					while (remainder > 0)
+					while (remainder >= 0)
 					{
-						reverse_rotate_a(utils);
+						rotate_a(utils);
 						remainder--;
 					}
 				}
 				else 
 				{
 					remainder = my_abs(cost_to_top) - my_abs(cost_in_stack_a);
-					while (remainder > 0)
+					while (remainder >= 0)
 					{
-						reverse_rotate_b(utils);
+						rotate_b(utils);
 						remainder--;
 					}
 				}
 			}
 			else 
 			{
-
 				if (cost_to_top > cost_in_stack_a)
 				{
 					remainder = cost_to_top - cost_in_stack_a;
-					while (remainder > 0)
+					while (remainder >= 0)
 					{
 						rotate_b(utils);
 						remainder--;
@@ -351,7 +316,7 @@ void count_cost(t_utils *utils)
 				else 
 				{
 					remainder = cost_in_stack_a - cost_to_top;
-					while (remainder > 0)
+					while (remainder >= 0)
 					{
 						rotate_a(utils);
 						remainder--;
@@ -360,61 +325,31 @@ void count_cost(t_utils *utils)
 			}
 		}
 	}
-	else
+	else if (cost_in_stack_a >= 0)
 	{
-		if (cost_in_stack_a >= 0)
+		while (cost_in_stack_a > 0)
 		{
-			while (cost_in_stack_a > 0)
-			{
-				rotate_a(utils);
-				cost_in_stack_a--;
-			}
+			rotate_a(utils);
+			cost_in_stack_a--;
 		}
+	}
+	else {
+		while (cost_in_stack_a < 0)
+		{
+			reverse_rotate_a(utils);
+			cost_in_stack_a++;
+		}
+	}
+	while (utils->stack_b[0] != lower_cost_element)
+	{
+		if (lower_cost_index > (utils->element_b / 2))
+			reverse_rotate_b(utils);
 		else {
-			while (cost_in_stack_a < 0)
-			{
-				reverse_rotate_a(utils);
-				cost_in_stack_a++;
-			}
-		}
-		while (utils->stack_b[0] != lower_cost_element)
-		{
-			if (lower_cost_index > (utils->element_b / 2))
-				reverse_rotate_b(utils);
-			else {
-				rotate_b(utils);
-			}
+			printf("d\n");
+			rotate_b(utils);
 		}
 	}
 	push_a(utils);
-}
-
-
-void alignment_stack(t_utils *utils)
-{
-	int bigger_element_index;
-	int cost;
-
-
-	bigger_element_index = find_bigger(utils->stack_a, utils->element_a);
-	if (bigger_element_index > (utils->element_a / 2))
-	{
-		cost = (utils->element_a - 1) - bigger_element_index ;
-		/*printf("cost %d bigger element index %d, size %d\n", cost, bigger_element_index, utils->element_a);*/
-		while (cost > 0)
-		 {
-			 reverse_rotate_a(utils);
-			 cost--;
-		 }
-	}
-	else {
-		cost = bigger_element_index;  
-		while (cost >= 0)
-		 {
-			rotate_a(utils);
-			cost--;
-		 }
-	}
 }
 
 int main(int ac, char **av)
@@ -428,20 +363,19 @@ int main(int ac, char **av)
 	/*for (int i = 0; i < utils->element_a ; i++)*/
 	/*	printf("utils->stack_a --> : %d\n", utils->stack_a[i]);*/
 	push_to_b(utils);
-	/*for (int i = 0; i < utils->element_a ; i++)*/
-	/*	printf("stack a after push to b --> : %d\n", utils->stack_a[i]);*/
-	/*for (int i = 0; i < utils->element_b ; i++)*/
-	/*	printf("utils->stack_b --> : %d\n", utils->stack_b[i]);*/
+	for (int i = 0; i < utils->element_a ; i++)
+		printf("stack a after push to b --> : %d\n", utils->stack_a[i]);
+	for (int i = 0; i < utils->element_b ; i++)
+		printf("utils->stack_b --> : %d\n", utils->stack_b[i]);
 	while (utils->element_b > 0)
 	{
 		count_cost(utils);
-		/*for (int i = 0; i < utils->element_a ; i++)*/
-		/*	printf("new stack a --> : %d\n", utils->stack_a[i]);*/
-		/*for (int i = 0; i < utils->element_b ; i++)*/
-		/*	printf("utils->stack_b --> : %d\n", utils->stack_b[i]);*/
+		for (int i = 0; i < utils->element_a ; i++)
+			printf("new stack a --> : %d\n", utils->stack_a[i]);
+		for (int i = 0; i < utils->element_b ; i++)
+			printf("utils->stack_b --> : %d\n", utils->stack_b[i]);
 		/*printf("1\n");*/
 	}
-	alignment_stack(utils);
 	/*count_cost(utils);*/
 	/*for (int i = 0; i < utils->element_a ; i++)*/
 	/*	printf("stack a after push to b --> : %d\n", utils->stack_a[i]);*/
@@ -454,6 +388,6 @@ int main(int ac, char **av)
 	/*for (int i = 0; i < utils->element_b ; i++)*/
 	/*	printf("utils->stack_b --> : %d\n", utils->stack_b[i]);*/
 	/*printf("----------------- \n");*/
-	/*for (int i = 0; i < utils->element_a ; i++)*/
-	/*	printf("utils->stack_a --> : %d\n", utils->stack_a[i]);*/
+	for (int i = 0; i < utils->element_a ; i++)
+		printf("utils->stack_a --> : %d\n", utils->stack_a[i]);
 }

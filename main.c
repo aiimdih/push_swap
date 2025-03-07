@@ -108,11 +108,27 @@ void push_to_b(t_utils *utils)
 {
 	int i;
 	int bigger_element_index;
+	int mid;
 
+	i = 0;
+	mid = 0;
+	while (i < utils->element_a)
+	{
+		 mid  = mid + utils->stack_a[i];
+		 i++;
+	}
+	mid /= utils->element_a;
 	i = 0;
 	while (utils->element_a > 3)
 	{
-		push_b(utils);
+		if (utils->stack_a[i] < mid)
+		{
+			 push_b(utils);
+			 rotate_b(utils);
+		}
+		else {
+			 push_b(utils);
+		}
 	}
 	bigger_element_index = find_bigger(utils->stack_a, utils->element_a);
 	if (utils->element_a == 3)
@@ -423,13 +439,15 @@ int main(int ac, char **av)
 	utils = malloc(sizeof(t_utils));
 	parse(av, ac, utils);
 	utils->lds_stack = malloc(sizeof(utils->element_a));
-	/*longest_stack(utils);*/
-	/*printf("k\n");*/
-	/*for (int i = 0; i < utils->element_a ; i++)*/
-	/*	printf("utils->stack_a --> : %d\n", utils->stack_a[i]);*/
-	push_to_b(utils);
 	/*for (int i = 0; i < utils->element_a ; i++)*/
 	/*	printf("stack a after push to b --> : %d\n", utils->stack_a[i]);*/
+	/*lis(utils);*/
+	/*printf("k\n");*/
+	/*return 0;*/
+	push_to_b(utils);
+	/*for (int i = 0; i < utils->element_a ; i++)*/
+	/*	printf("utils->stack_a --> : %d\n", utils->stack_a[i]);*/
+	/*printf("----------------------\n");*/
 	/*for (int i = 0; i < utils->element_b ; i++)*/
 	/*	printf("utils->stack_b --> : %d\n", utils->stack_b[i]);*/
 	while (utils->element_b > 0)

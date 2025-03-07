@@ -93,7 +93,8 @@ void lis(t_utils *utils)
 	index = 0;
 	ignored = malloc((utils->element_a + 1) * sizeof(int));
 	ignore_to_firs_index(ignored, &ignored_size, utils);
-
+	for (int i = 0; i < ignored_size; i++)
+		printf("ignored array ==> %d ignored size on the first op %d\n",  ignored[i], ignored_size);
 	index = 0;
 	while (index < utils->element_a)
 	{
@@ -103,9 +104,9 @@ void lis(t_utils *utils)
 		save = -1;
 		while (index < utils->element_a && ignored_size > 0 && ignored_elements(utils->stack_a[index], ignored, ignored_size))
 			index++;
-		/*printf("ignored size --> %d\n", ignored_size);*/
-		/*for (int i = 0; i < ignored_size; i++)*/
-		/*	printf("element in ignored %d\n",  ignored[i]);*/
+		printf("ignored size --> %d\n", ignored_size);
+		for (int i = 0; i < ignored_size; i++)
+			printf("element in ignored %d\n",  ignored[i]);
 		j = index + 1;
 		while (j < utils->element_a)
 		{
@@ -124,6 +125,7 @@ void lis(t_utils *utils)
 				{
 					ignored[ignored_size] = utils->stack_a[j];
 					ignored_size ++;
+					printf("element %d is ignored , new size ==> %d\n", utils->stack_a[j], ignored_size);
 				}
 			}
 			j++;
@@ -134,6 +136,7 @@ void lis(t_utils *utils)
 			continue;
 		}
 		best_index = save;
+		printf("best indes afret end the loop %d element %d index is %d \n", best_index,utils->stack_a[best_index], index);
 		prev_len = 0;
 		while (save > index)
 		{
@@ -164,7 +167,8 @@ void lis(t_utils *utils)
 			save--;
 		}
 		/*printf("ignored_size  %d\n", ignored_size);*/
-		while (best_index > index && ignored_size + 1 <= utils->element_a)
+		printf("best element is %d \n", best_index); 
+		while (best_index > index )
 		{
 			if (best_index - 1 == index)
 				break;
@@ -172,6 +176,7 @@ void lis(t_utils *utils)
 			{
 				ignored[ignored_size] = utils->stack_a[best_index - 1];
 				ignored_size ++;
+				printf("element %d is ignored , new size ==> %d afret find the best len\n", utils->stack_a[best_index -1], ignored_size);
 			}
 			best_index--;
 		}
@@ -190,7 +195,7 @@ void lis(t_utils *utils)
 			utils->lds_stack_size++;
 			i++;
 		}
-		printf("index %d\n", index);
+		/*printf("index %d\n", index);*/
 		index++;
 	}
 	for (int i = 0; i < utils->lds_stack_size; i++)

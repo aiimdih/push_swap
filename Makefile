@@ -5,7 +5,8 @@ NAME = push_swap
 
 ARC = ./libft/libft.a
 
-SRCS = parse.c instructions.c lst_.c main.c  
+SRCS = parse_utils.c parse.c run_cost.c utils.c directions.c pre_sorting.c main.c \
+	   instructions_combo.c instructions_push.c instructions_rotate.c instructions_swap.c
 
 OBJS = $(SRCS:.c=.o)
 
